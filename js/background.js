@@ -39,7 +39,7 @@ denkiYoho.prototype.setIcon = function(capa, dem)
 {
     var per = parseInt(dem) / parseInt(capa) * 100;
     per = per.toFixed(0);
-    if (this.showBadge < per) {
+    if (this.showBadge < per || localStorage.getItem('showDemand') === 'true') {
         chrome.browserAction.setBadgeText({"text": per+'%'});
     } else {
         chrome.browserAction.setBadgeText({"text": ''});
