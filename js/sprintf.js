@@ -1,0 +1,1 @@
+String.prototype.sprintf=function(){var d=this+"";var a=Array.prototype.slice.call(arguments);var c=true;if(d.indexOf("%s",0)!=-1){c=false}if(a.length===1){if(c){return d.replace(/%1$s/g,a[0])}else{return d.replace(/%s/g,a[0])}}else{for(var b=0;b<a.length;b++){var e=b+1;if(c){d=d.replace("%"+e+"$s",a[b])}else{d=d.replace("%s",a[b])}}}return d};
