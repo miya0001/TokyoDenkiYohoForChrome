@@ -37,6 +37,7 @@ denkiYoho.prototype.getLastDay = function()
 
 denkiYoho.prototype.getJson = function(day)
 {
+    console.log(day);
     chrome.browserAction.setIcon({path: 'img/grey.png'});
     chrome.browserAction.setBadgeText({"text": ''});
 

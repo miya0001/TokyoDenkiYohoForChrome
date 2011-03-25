@@ -9,7 +9,11 @@
         "48": "img/48.png",
         "128": "img/128.png"
     },
-    "permissions": ["http://denki.cuppat.net/"],
+    "permissions": [
+        "notifications",
+        "http://denki.cuppat.net/",
+        "http://twitter.com/"
+    ],
     "browser_action": {
         "default_title": "\u3067\u3093\u304D\u4E88\u5831",
         "default_icon": "img/grey.png"

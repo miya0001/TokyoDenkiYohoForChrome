@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" type="text/css" href="css/notification.css" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    var bg = chrome.extension.getBackgroundPage();
+    var twt = bg.lastTweet;
+    $('body').css('backgroundImage', 'url('+twt.bg+')');
+    $('#image').attr('src', twt.icon);
+    $('#txt').text(twt.text);
+    $('h1').text(twt.sname);
+    $('#content').click(function(){
+        chrome.tabs.create({url: twt.link});
+        window.close();
+    });
+});
+</script>
+</head>
+<body>
+<div id="content">
+<div id="left"><img id="image" width="48" height="48" /></div>
+<div id="right">
+    <h1></h1>
+    <div id="txt"></div>
+</div>
+</div>
+</body>
+</html>
