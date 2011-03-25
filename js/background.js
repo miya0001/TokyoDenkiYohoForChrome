@@ -1,6 +1,6 @@
 function denkiYoho()
 {
-    this.baseURL = 'http://denki.cuppat.net/data/%s%s%s.json';
+    this.baseURL = 'http://denki.cuppat.net/data/%s.json';
     this.default = 'img/blue.png';
     this.icons = {
         80: 'img/green.png',
@@ -19,19 +19,48 @@ denkiYoho.prototype.load = function()
     var y = today.getFullYear();
     var m = today.getMonth() + 1;
     var d = today.getDate();
-    m = (m < 10) ? '0' + m : m;
-    d = (d < 10) ? '0' + d : d;
-    var url = this.baseURL.sprintf(y, m, d);
+    m = (m < 10) ? '0' + m : m + '';
+    d = (d < 10) ? '0' + d : d + '';
+    y = y + '';
+    this.getJson(y + m + d);
+}
+
+denkiYoho.prototype.getLastDay = function()
+{
+    var last = new Date();
+    last.setTime(last.getTime()-86400*1000);
+    var y = last.getFullYear();
+    var m = last.getMonth() + 1;
+    var d = last.getDate();
+    m = (m < 10) ? '0' + m : m + '';
+    d = (d < 10) ? '0' + d : d + '';
+    y = y + '';
+    this.getJson(y + m + d);
+}
+
+denkiYoho.prototype.getJson = function(day)
+{
+    var url = this.baseURL.sprintf(day);
     var self = this;
-    $.getJSON(url, function(data) {
-        var capa = data.capability;
-        var dem = 0;
-        for (var i=0; i<data.hours.length; i++) {
-            if (data.hours[i]) {
-                dem = data.hours[i];
+    $.ajax({
+        type: 'get',
+        url: url,
+        dataType: 'json',
+        success: function(data){
+            var capa = data.capability;
+            var dem = 0;
+            for (var i=0; i<data.hours.length; i++) {
+                if (data.hours[i]) {
+                    dem = data.hours[i];
+                }
+            }
+            self.setIcon(capa, dem);
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+            if (XMLHttpRequest.status == 404) {
+                self.getLastDay();
             }
         }
-        self.setIcon(capa, dem);
     });
 }
 
@@ -64,7 +93,7 @@ function loadDenkiYoho()
 
 $(document).ready(function() {
     loadDenkiYoho();
-    $.timer(10*60*1000, loadDenkiYoho); // every 10 minutes
+    setInterval(loadDenkiYoho, 10*60*1000); // every 10 minutes
     chrome.browserAction.onClicked.addListener(function(tab) {
         var href = 'http://www.tepco.co.jp/forecast/';
         if (localStorage.getItem('open') === 'true') {
@@ -75,36 +104,3 @@ $(document).ready(function() {
     });
 });
 
-
-jQuery.timer = function (interval, callback)
- {
-    var interval = interval || 100;
-
-    if (!callback)
-        return false;
-
-    _timer = function (interval, callback) {
-        this.stop = function () {
-            clearInterval(self.id);
-        };
-
-        this.internalCallback = function () {
-            callback(self);
-        };
-
-        this.reset = function (val) {
-            if (self.id)
-                clearInterval(self.id);
-
-            var val = val || 100;
-            this.id = setInterval(this.internalCallback, val);
-        };
-
-        this.interval = interval;
-        this.id = setInterval(this.internalCallback, this.interval);
-
-        var self = this;
-    };
-
-    return new _timer(interval, callback);
-};
