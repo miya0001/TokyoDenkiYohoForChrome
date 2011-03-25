@@ -12,9 +12,6 @@ function denkiYoho()
 
 denkiYoho.prototype.load = function()
 {
-    chrome.browserAction.setIcon({path: 'img/grey.png'});
-    chrome.browserAction.setBadgeText({"text": ''});
-
     var today = new Date();
     var y = today.getFullYear();
     var m = today.getMonth() + 1;
@@ -35,11 +32,14 @@ denkiYoho.prototype.getLastDay = function()
     m = (m < 10) ? '0' + m : m + '';
     d = (d < 10) ? '0' + d : d + '';
     y = y + '';
-    this.getJson(y + m + d);
+    return y + m + d;
 }
 
 denkiYoho.prototype.getJson = function(day)
 {
+    chrome.browserAction.setIcon({path: 'img/grey.png'});
+    chrome.browserAction.setBadgeText({"text": ''});
+
     var url = this.baseURL.sprintf(day);
     var self = this;
     $.ajax({
@@ -58,7 +58,10 @@ denkiYoho.prototype.getJson = function(day)
         },
         error: function(XMLHttpRequest, textStatus, errorThrown) {
             if (XMLHttpRequest.status == 404) {
-                self.getLastDay();
+                var last = self.getLastDay();
+                if (day !== last) {
+                    self.getJson(last);
+                }
             }
         }
     });
