@@ -1,7 +1,7 @@
 function denkiYoho()
 {
     this.baseURL = 'http://denki.cuppat.net/data/%s.json';
-    this.default = 'img/blue.png';
+    this.defaultIcon = 'img/blue.png';
     this.icons = {
         80: 'img/green.png',
         90: 'img/orange.png',
@@ -78,7 +78,7 @@ denkiYoho.prototype.setIcon = function(capa, dem)
         chrome.browserAction.setBadgeText({"text": ''});
     }
 
-    var icon = this.default;
+    var icon = this.defaultIcon;
     for (var i in this.icons) {
         if (per >= i) {
             icon = this.icons[i];
