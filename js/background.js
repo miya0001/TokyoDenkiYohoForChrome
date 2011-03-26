@@ -85,6 +85,11 @@ denkiYoho.prototype.setIcon = function(capa, dem)
         }
     }
     chrome.browserAction.setIcon({path:icon});
+    dem = dem+'';
+    dem = dem.number_format();
+    capa = capa+'';
+    capa = capa.number_format();
+    chrome.browserAction.setTitle({title: dem+'万kw/'+capa+'万kw'});
     //console.log('latest: '+per+'%');
 }
 
