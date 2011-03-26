@@ -8,7 +8,7 @@ function TN()
 TN.prototype.load = function()
 {
     if (localStorage.getItem('notificate') !== 'true') {
-        console.log('quit');
+        //console.log('quit');
         return;
     }
     $.ajax({
@@ -16,23 +16,30 @@ TN.prototype.load = function()
         url: this.url,
         dataType: 'json',
         success: function(data){
-            var id = data[0].id_str;
+            data = data.reverse();
             var last = localStorage.getItem('lastTweet');
-            if (id > last) {
-                window.lastTweet.sname = data[0].user.screen_name;
-                window.lastTweet.icon = data[0].user.profile_image_url;
-                window.lastTweet.bg = data[0].user.profile_background_image_url;
-                var link = 'https://twitter.com/#!/%s/status/%s';
-                window.lastTweet.link = link.sprintf(
-                    window.lastTweet.sname,
-                    id
-                );
-                window.lastTweet.text = data[0].text;
-                var notification = webkitNotifications.createHTMLNotification(
-                    'notification.html'
-                );
-                notification.show();
-                localStorage.setItem('lastTweet', id);
+            for (var i=0; i<data.length; i++) {
+                var id = data[i].id_str;
+                if (id > last) {
+                    window.lastTweet.sname = data[i].user.screen_name;
+                    window.lastTweet.icon = data[i].user.profile_image_url;
+                    window.lastTweet.bg = data[i].user.profile_background_image_url;
+                    var link = 'https://twitter.com/#!/%s/status/%s';
+                    window.lastTweet.link = link.sprintf(
+                        window.lastTweet.sname,
+                        id
+                    );
+                    window.lastTweet.text = data[i].text;
+                    var notification = webkitNotifications.createHTMLNotification(
+                        'notification.html'
+                    );
+                    localStorage.setItem('lastTweet', id);
+                    notification.show();
+                    notification.onclose = function(e){
+                        loadTweetNotifier();
+                    };
+                    break;
+                }
             }
         },
         error: function(){
